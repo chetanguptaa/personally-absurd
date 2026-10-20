@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIR GOAT · FLIGHT CG-001</title>
+  <meta name="description" content="Now boarding. Captain Chetan will be your pilot. Licence pending." />
+  <meta property="og:title" content="AIR GOAT · FLIGHT CG-001" />
+  <meta property="og:description" content="Now boarding. Captain Chetan will be your pilot. Licence pending." />
+  <meta property="og:image" content="/img/captain.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- ============ HUD ============ -->
+  <header class="hud-top">
+    <div class="hud-cell hud-brand" id="hudBrand">✈ AIR GOAT</div>
+    <div class="hud-cell hud-flt">FLT <b>CG-001</b></div>
+    <div class="hud-cell hud-honor">
+      <span>HONOR</span>
+      <div class="honor-bar"><i id="honorFill"></i></div>
+      <span id="honorLabel" class="honor-label"></span>
+    </div>
+    <button id="muteBtn" class="hud-cell hud-btn" type="button">🔊 SOUND ON</button>
+  </header>
+
+  <div id="intercom" class="intercom" role="status" aria-live="polite" title="Tap to dismiss">
+    <span class="intercom-tag">◉ CAPTAIN SPEAKING · TAP TO DISMISS</span>
+    <p id="intercomText"></p>
+  </div>
+
+  <aside class="altimeter" aria-hidden="true">
+    <div class="alt-label">ALTITUDE</div>
+    <div class="alt-tape"><i id="altFill"></i></div>
+    <div class="alt-value"><span id="altValue">0</span><small>FT</small></div>
+  </aside>
+
+  <div class="hype" id="hype">
+    <div class="hype-label" id="hypeLabel">HYPE</div>
+    <div class="hype-value" id="hypeValue">1</div>
+    <div class="hype-meter"><i id="hypeFill"></i></div>
+    <div class="hype-btns">
+      <button id="hypeDown" type="button" aria-label="Lower hype">−</button>
+      <button id="hypeUp" type="button" aria-label="Raise hype">+</button>
+    </div>
+  </div>
+
+  <main id="main">
+    <!-- ============ 00 GATE ============ -->
+    <section id="gate" class="gate">
+      <div class="sec-label">TERMINAL ∞ · GATE 1 · <span class="blink">NOW BOARDING</span></div>
+      <h1 class="hero-title">
+        <span class="hero-line">AIR</span>
+        <span class="hero-line hero-line--hot">GOAT</span>
+      </h1>
+      <figure class="crew-card" id="crewCard">
+        <div class="duo"><img src="/img/captain.jpg" alt="Chetan in a leather aviator jacket with a headset round his neck, in front of a Cessna" width="1344" height="1400" /></div>
+        <figcaption><span>CREW ID · CAPTAIN CHETAN</span><span>FLIGHT HOURS: 0</span></figcaption>
+        <div class="stamp stamp--hero">PILOT LICENCE:<br />PENDING</div>
+      </figure>
+
+      <div class="gate-grid">
+        <p class="hero-copy">
+          Captain <b>CHETAN</b> will be flying you today. He has zero flight hours, no licence,
+          and the confidence of a man with ten thousand.
+          <br /><br />
+          Air GOAT operates a fleet of <span class="hl">one (1) Cessna 172</span>. Not yet purchased. It seats four. One of them is his.
+          <br /><br />
+          Please remain seated. The captain will be talking about himself for the entire flight.
+          Estimated duration: <span class="hl">3 hours</span>. He has never finished early.
+        </p>
+
+        <div class="departures">
+          <div class="dep-head"><span>FLIGHT</span><span>TO</span><span>STATUS</span></div>
+          <div id="departures"></div>
+        </div>
+      </div>
+
+      <form id="boardForm" class="board-form" autocomplete="off">
+        <label for="paxName">PASSENGER NAME</label>
+        <div class="board-row">
+          <input id="paxName" maxlength="20" placeholder="YOUR NAME HERE" required />
+          <button type="submit" class="btn btn--hot">PRINT BOARDING PASS →</button>
+        </div>
+      </form>
+
+      <div id="pass" class="pass" hidden>
+        <div class="pass-main">
+          <div class="pass-top"><span>✈ AIR GOAT</span><span>BOARDING PASS</span></div>
+          <div class="pass-fields">
+            <div><small>PASSENGER</small><b id="pName"></b></div>
+            <div><small>FROM</small><b>WHEREVER YOU WERE</b></div>
+            <div><small>TO</small><b>CHETAN'S WORLD</b></div>
+            <div><small>CLASS</small><b id="pClass"></b></div>
+            <div><small>SEAT</small><b id="pSeat"></b></div>
+            <div><small>GROUP</small><b id="pGroup"></b></div>
+          </div>
+          <p id="pNote" class="pass-note"></p>
+        </div>
+        <div class="pass-stub">
+          <div id="barcode" class="barcode"></div>
+          <small>GATE 1 · CG-001</small>
+        </div>
+        <div class="stamp stamp--pass">UPGRADED BY<br />THE CAPTAIN</div>
+      </div>
+    </section>
+
+    <!-- ============ THE QUOTE (front door) ============ -->
+    <section id="quote" class="quote-band">
+      <div class="sec-label">CAPTAIN'S LOG · ENTRY 001</div>
+      <blockquote>
+        "Sometimes I cry thinking about it. When I get to heaven, Alexander the Great and the other legends
+        will already be waiting. <mark>They've booked a table for me.</mark> We'll all sit there and trade our greatest stories."
+        <cite>THE CAPTAIN · COMPLETELY SERIOUS · SEE SECTION 04</cite>
+      </blockquote>
+    </section>
+
+    <div class="marquee"><div class="marquee-track" data-marquee="✈ NOW BOARDING ✈ FLEET SIZE: 1 ✈ HUMILITY NOT INCLUDED ✈ NO REFUNDS ✈ PILOT LICENCE PENDING ✈ PLEASE REMAIN SEATED "></div></div>
+
+    <!-- ============ 01 BOUNTY ============ -->
+    <section id="bounty" class="bounty">
+      <div class="sec-label">01 / TERMINAL NOTICE BOARD</div>
+      <div class="bounty-grid">
+        <div class="poster" id="poster">
+          <div class="poster-wanted">WANTED</div>
+          <div class="poster-photo">
+            <img src="/img/wanted.jpg" alt="Wanted poster mugshot of Chetan: wide eyes, wild hair, enormous grin" width="900" height="746" />
+            <span>CAUTION: WILL MENTION HIS VO2 MAX</span>
+          </div>
+          <div class="poster-doa"><s>DEAD OR</s> ALIVE <em>VERY ALIVE. EXTREMELY ALIVE.</em></div>
+          <div class="poster-name">CHETAN</div>
+          <div class="poster-bounty">฿ <span id="bountyValue">3,000,000,000</span>-</div>
+          <div class="poster-foot">MARINE HQ · THE MARINES ARE NERVOUS</div>
+        </div>
+        <div class="bounty-side">
+          <h2 class="sec-title">HIS BOUNTY<br />GOES UP<br /><span class="hl-block">WHILE YOU<br />READ THIS.</span></h2>
+          <ol class="crimes">
+            <li>Talking about himself for 3 hours straight <em>(personal best: 4)</em></li>
+            <li>Running. For fun. Voluntarily.</li>
+            <li>Watching The Godfather and taking notes</li>
+            <li>Driving a Cessna like it's Monaco</li>
+            <li>Representing himself in court. And winning.</li>
+          </ol>
+          <button id="sighting" class="btn btn--hot" type="button">REPORT A SIGHTING</button>
+          <p id="sightMsg" class="sight-msg"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 WEIGHT & BALANCE ============ -->
+    <section id="gym" class="gym">
+      <div class="sec-label">02 / PRE-FLIGHT · WEIGHT &amp; BALANCE</div>
+      <div class="gym-head">
+        <div>
+          <h2 class="sec-title">LOAD<br />THE BAR.</h2>
+          <p class="gym-intro">Every flight starts with a weight &amp; balance check. The captain does his at the gym.</p>
+        </div>
+        <div class="gym-readout"><span id="kg">20</span><small>KG</small></div>
+      </div>
+      <div class="medical">
+        <div class="medical-head"><span>PILOT MEDICAL CERTIFICATE</span><span>SELF-ISSUED</span></div>
+        <div class="vitals">
+          <div><small>WHOOP AGE</small><b>15</b><small>REAL AGE: 24</small></div>
+          <div><small>VO2 MAX</small><b>60</b><small>HE'LL TELL YOU ANYWAY</small></div>
+          <div><small>WRIST</small><b>HEALED</b><small>SEE EXHIBIT A</small></div>
+          <div><small>NEXT</small><b>IRONMAN</b><small>CURRENTLY: RUNNING</small></div>
+        </div>
+      </div>
+      <svg id="barbell" class="barbell" viewBox="0 0 600 260" aria-label="A barbell that bends as you add weight">
+        <g id="bbLift">
+          <path id="bbBar" d="M20 120 Q300 120 580 120" />
+          <g id="bbPlatesL"></g>
+          <g id="bbPlatesR"></g>
+        </g>
+        <g class="lifter">
+          <circle cx="300" cy="70" r="22" />
+          <line id="armL" x1="300" y1="100" x2="230" y2="120" />
+          <line id="armR" x1="300" y1="100" x2="370" y2="120" />
+          <line x1="300" y1="92" x2="300" y2="190" />
+          <line x1="300" y1="190" x2="265" y2="250" />
+          <line x1="300" y1="190" x2="335" y2="250" />
+          <text x="300" y="76" text-anchor="middle">CPT</text>
+        </g>
+      </svg>
+      <p id="gymMsg" class="gym-msg">Empty bar. He's still talking to you.</p>
+      <div class="gym-btns">
+        <button id="addPlate" class="btn btn--hot" type="button">+ ADD PLATES</button>
+        <button id="lift" class="btn btn--ink" type="button">LIFT</button>
+        <button id="spot" class="btn" type="button">SPOT HIM</button>
+        <button id="strip" class="btn" type="button">REMOVE PLATES</button>
+      </div>
+      <div class="gym-reps">REPS: <b id="reps">0</b></div>
+    </section>
+
+    <div class="marquee marquee--hot"><div class="marquee-track" data-marquee="⚠ CRUISING ALTITUDE: UNMATCHED ⚠ WEATHER AT DESTINATION: CHETAN ⚠ 100% CHANCE OF CHETAN "></div></div>
+
+    <!-- ============ 03 IN-FLIGHT MAGAZINE ============ -->
+    <section id="ife" class="mag">
+      <div class="sec-label">03 / SEAT POCKET IN FRONT OF YOU</div>
+      <div class="mag-cover">
+        <div class="mag-mast">SKY GOAT</div>
+        <div class="mag-meta"><span>THE IN-FLIGHT MAGAZINE OF AIR GOAT</span><span>ISSUE 001 · COMPLIMENTARY</span><span>EDITOR, WRITER, COVER STAR: THE CAPTAIN</span></div>
+      </div>
+      <div class="mag-grid">
+        <div>
+          <h3 class="mag-h">THE CAPTAIN RECOMMENDS</h3>
+          <ul class="watch">
+            <li><b>THE GODFATHER TRILOGY</b><span>Watched it once. Now makes offers nobody can refuse. Including the waiter.</span><em>11/10</em></li>
+            <li><b>THE LIGHTHOUSE</b><span>Genuinely unhinged. Two men, one lighthouse, zero sanity. Watched it twice.</span><em>10/10</em></li>
+            <li><b>A BRONX TALE</b><span>"The saddest thing in life is wasted talent." He took that personally.</span><em>10/10</em></li>
+            <li><b>SUITS · A FEW GOOD MEN</b><span>Responsible for his irrational love of law. See section 05.</span><em>NO OBJECTIONS</em></li>
+            <li><b>RED DEAD REDEMPTION 2</b><span>Cried at the ending. Will deny it under oath.</span><em>10/10</em></li>
+            <li><b>ONE PIECE · NARUTO · DEATH NOTE</b><span>Has opinions. Many opinions. Ask about Naruto and clear your evening.</span><em>∞</em></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="mag-h">AUDIO CHANNELS · TAP TO PLAY</h3>
+          <div class="radio">
+            <button class="chan" data-chan="weeknd" type="button"><b>CH 1 · THE WEEKND</b><span>Turns on AFTER HOURS mode.</span></button>
+            <button class="chan" data-chan="mj" type="button"><b>CH 2 · MICHAEL JACKSON</b><span>The website will moonwalk.</span></button>
+            <button class="chan" data-chan="prince" type="button"><b>CH 3 · PRINCE</b><span>Weather warning: purple.</span></button>
+            <button class="chan" data-chan="chetan" type="button"><b>CH 4 · CHETAN</b><span>Chetan, on Chetan. 3h 00m. Loops forever.</span></button>
+          </div>
+          <div id="nowPlaying" class="now-playing">SELECT A CHANNEL</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 04 THE TABLE ============ -->
+    <section id="table" class="table-sec">
+      <div class="sec-label">04 / ABOVE THE CLOUDS · MAXIMUM ALTITUDE</div>
+      <h2 class="sec-title">THE TABLE<br /><span class="hl-block">IS BOOKED.</span></h2>
+      <p class="table-copy">He meant every word of the captain's log. So he's been preparing his stories. Every time he does something, however small, it becomes a legend. Then he tells you about it. Then he brings it up again next time you meet.</p>
+
+      <div class="table-grid">
+        <div>
+          <h3>HIS LEGENDS SO FAR</h3>
+          <div class="chips" id="chips">
+            <button class="chip" type="button" data-deed="made Maggi in under two minutes">MAGGI IN UNDER 2 MIN</button>
+            <button class="chip" type="button" data-deed="woke up before the alarm">WOKE UP BEFORE THE ALARM</button>
+            <button class="chip" type="button" data-deed="parallel parked on the first try">PARALLEL PARKED, FIRST TRY</button>
+            <button class="chip" type="button" data-deed="replied to a text the same day">REPLIED TO A TEXT SAME DAY</button>
+            <button class="chip" type="button" data-deed="ran a 5K without stopping once">RAN A 5K, NO STOPS</button>
+          </div>
+        </div>
+        <div>
+          <h3>TELL THE TABLE ONE OF YOURS</h3>
+          <form id="legendForm" class="legend-form" autocomplete="off">
+            <input id="legendDeed" maxlength="60" placeholder="something small you did today, e.g. made tea" required />
+            <button type="submit" class="btn btn--hot">TELL THE TABLE</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="reserved" class="reserved" hidden>
+        <div class="reserved-top">RESERVED</div>
+        <p id="legendStory" class="reserved-story"></p>
+        <p id="legendReact" class="reserved-react"></p>
+        <p id="legendFoot" class="reserved-foot"></p>
+      </div>
+    </section>
+
+    <!-- ============ 05 COURT ============ -->
+    <section id="court" class="court">
+      <div class="sec-label">05 / MID-AIR TRIBUNAL · CASE NO. CG-001</div>
+      <h2 class="sec-title">THE PEOPLE<br />v. <span class="hl-block">CHETAN.</span></h2>
+      <p class="court-copy">Yes, a four-seat Cessna has a courtroom. The captain is representing himself. Bar exam: pending. He's cleared every other bar. Mostly at the gym.</p>
+
+      <div class="court-grid">
+        <div>
+          <h3 class="court-sub">EXHIBITS FOR THE PROSECUTION <small>· RECOVERED FROM THE BLACK BOX · TAP TO UNSEAL</small></h3>
+          <ul class="records">
+            <li class="record"><span class="rec-id">EXHIBIT A</span><span class="rec-body">Attempted a 5-foot box jump. He is 5'9". <span class="redact">Wrist: broken. Box: undefeated. Rematch: pending.</span></span><span class="rec-status">REMATCH PENDING</span></li>
+            <li class="record"><span class="rec-id">EXHIBIT B</span><span class="rec-body">Tells everyone his WHOOP age is 15. He is 24. <span class="redact">Ruling: Benjamin Button, but with cardio.</span></span><span class="rec-status">ADMISSIBLE</span></li>
+            <li class="record"><span class="rec-id">EXHIBIT C</span><span class="rec-body">Turns every tiny win into a legend, then retells it the next time you meet. <span class="redact">The court reporter has filed for exhaustion.</span></span><span class="rec-status">ONGOING</span></li>
+            <li class="record"><span class="rec-id">EXHIBIT D</span><span class="rec-body">Says things before thinking them through. <span class="redact">The defence calls this "speed".</span></span><span class="rec-status">BY DESIGN</span></li>
+            <li class="record"><span class="rec-id">EXHIBIT E</span><span class="rec-body">Lost an argument. <span class="redact">RECORD NOT FOUND. THIS NEVER HAPPENED.</span></span><span class="rec-status">SEALED</span></li>
+            <li class="record"><span class="rec-id">EXHIBIT F</span><span class="rec-body">Despite Exhibits A through E, everyone still likes him. <span class="redact">The prosecution cannot explain this. Neither can he.</span></span><span class="rec-status">UNSOLVED</span></li>
+          </ul>
+        </div>
+
+        <div class="bench">
+          <div class="bench-label">THE BENCH</div>
+          <p id="verdict" class="verdict">ORDER.</p>
+          <div class="bench-btns">
+            <button id="objection" class="btn btn--hot" type="button">OBJECTION!</button>
+            <button id="witness" class="btn" type="button">CALL A WITNESS</button>
+            <button id="truth" class="btn btn--paper" type="button">I WANT THE TRUTH</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 LANDING ============ -->
+    <section id="landing" class="landing">
+      <div class="sec-label">06 / FINAL APPROACH</div>
+      <h2 class="hero-title landing-title"><span class="hero-line">PREPARE</span><span class="hero-line">FOR</span><span class="hero-line hero-line--hot">LANDING</span></h2>
+      <p class="landing-sub">Tray tables up. Humility down.</p>
+
+      <div class="landing-grid">
+        <div class="box">
+          <h3>RATE YOUR FLIGHT</h3>
+          <div id="stars" class="stars">
+            <button type="button" data-star="1" aria-label="1 star">★</button><button type="button" data-star="2" aria-label="2 stars">★</button><button type="button" data-star="3" aria-label="3 stars">★</button><button type="button" data-star="4" aria-label="4 stars">★</button><button type="button" data-star="5" aria-label="5 stars">★</button>
+          </div>
+          <p id="rateMsg" class="fine">Be honest. We'll handle the rest.</p>
+        </div>
+        <div class="box box--ink">
+          <h3>CONTACT THE CAPTAIN</h3>
+          <p>He'll make you an offer you can't refuse.</p>
+          <div id="links" class="links"></div>
+        </div>
+        <div class="box">
+          <h3>YOUR HONOR</h3>
+          <div class="final-honor"><span id="finalHonor">10</span>%</div>
+          <p id="finalHonorLabel" class="fine"></p>
+          <p class="fine">Reach 100% to be promoted.</p>
+          <button id="again" class="btn btn--hot" type="button">BOOK ANOTHER FLIGHT ↑</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>© AIR GOAT. ALL RIGHTS RESERVED. ALL RESPECT RESERVED FOR THE CAPTAIN.</span>
+      <span>NO PLANES WERE HARMED. ONE WRIST WAS.</span>
+    </footer>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
